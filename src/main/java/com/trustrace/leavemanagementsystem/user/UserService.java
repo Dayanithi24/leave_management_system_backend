@@ -2,6 +2,7 @@ package com.trustrace.leavemanagementsystem.user;
 
 import com.trustrace.leavemanagementsystem.security.AppUserConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,9 @@ public class UserService {
 
     public boolean deleteUser(String id) {
         return dao.deleteUserById(id);
+    }
+
+    public Page<User> getUsersOfPage(int page, int size) {
+        return dao.getUsersOfPage(page, size);
     }
 }

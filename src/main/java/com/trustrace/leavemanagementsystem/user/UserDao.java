@@ -1,6 +1,10 @@
 package com.trustrace.leavemanagementsystem.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -37,5 +41,17 @@ public class UserDao {
         }
         mt.remove(user);
         return true;
+    }
+
+    public Page<User> getUsersOfPage(int page, int size) {
+        Query query = new Query();
+        long totalCount = mt.count(query, User.class);
+
+        Pageable pageable = PageRequest.of(page, size);
+        query.with(pageable);
+
+        List<User> responses = mt.find(query, User.class);
+
+        return new PageImpl<>(responses, pageable, totalCount);
     }
 }

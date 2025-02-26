@@ -2,19 +2,19 @@ package com.trustrace.leavemanagementsystem.models;
 
 import com.trustrace.leavemanagementsystem.jwt.JwtUtil;
 import com.trustrace.leavemanagementsystem.security.MyUserDetailsService;
+import com.trustrace.leavemanagementsystem.user.User;
+import com.trustrace.leavemanagementsystem.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/")
+@CrossOrigin(origins = {"http://localhost:4200"})
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -22,6 +22,8 @@ public class AuthController {
     private JwtUtil jwtUtil;
     @Autowired
     private MyUserDetailsService myUserDetailsService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("authenticate/")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) {
@@ -35,8 +37,9 @@ public class AuthController {
 
         UserDetails userDetails = myUserDetailsService.loadUserByUsername(authRequest.getEmail());
         String jwt = jwtUtil.generateToken(userDetails);
+        User user = userService.getUserByEmail((authRequest.getEmail()));
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId()));
     }
 
 }
