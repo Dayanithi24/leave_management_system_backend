@@ -11,7 +11,7 @@ public class FileDataService {
     @Autowired
     private FileDataDao dao;
 
-    public String uploadFile(MultipartFile file) throws Exception {
+    public FileData uploadFile(MultipartFile file) throws Exception {
         return dao.uploadFile(file);
     }
 

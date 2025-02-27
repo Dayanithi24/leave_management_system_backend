@@ -18,7 +18,7 @@ public class FileDataDao {
     @Value("${upload.path}")
     private String dirPath;
 
-    public String uploadFile(MultipartFile file) throws Exception {
+    public FileData uploadFile(MultipartFile file) throws Exception {
         String filePath = dirPath + file.getOriginalFilename();
         FileData fileData = mt.save(FileData.builder()
                         .fileName(file.getOriginalFilename())
@@ -26,13 +26,27 @@ public class FileDataDao {
                         .filePath(filePath)
                 .build());
         file.transferTo(new File(filePath));
-        if(fileData != null) {
-            return "File uploaded Successfully " + fileData.getId();
-        }
-        return null;
+        return fileData;
     }
 
     public FileData downloadFile(String id) throws IOException {
-        return mt.findById(id, FileData.class);
+        FileData fileData = mt.findById(id, FileData.class);
+//        if (fileData == null) throw new RuntimeException("File Not found in FileDataDao");
+        return fileData;
+    }
+
+    public FileData changeExistingFile(String fileId, MultipartFile img) throws Exception {
+        FileData fileData = mt.findById(fileId, FileData.class);
+        if (fileData == null) throw new RuntimeException("File Not found in FileDataDao");
+
+        FileData newFile = uploadFile(img);
+        if(newFile == null) throw new RuntimeException("File Not Saved in FileDataDao");
+
+        File existingFile = new File(fileData.getFilePath());
+        if (existingFile.exists()) {
+            existingFile.delete();
+        }
+        mt.remove(fileData);
+        return newFile;
     }
 }

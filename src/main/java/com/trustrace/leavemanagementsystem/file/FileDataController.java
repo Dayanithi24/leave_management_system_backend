@@ -19,9 +19,9 @@ public class FileDataController {
 
     @PostMapping("upload")
     public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws Exception {
-        String response = fs.uploadFile(file);
+        FileData response = fs.uploadFile(file);
         if(response == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok("File uploaded Successfully " + response.getId());
     }
     @GetMapping("{id}")
     public ResponseEntity<?> downloadFile(@PathVariable String id) throws IOException {

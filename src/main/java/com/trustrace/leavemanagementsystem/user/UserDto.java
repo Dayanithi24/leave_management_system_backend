@@ -1,30 +1,22 @@
 package com.trustrace.leavemanagementsystem.user;
 
-import jakarta.persistence.Id;
-import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "users")
 @Data
-
-public class User {
-    @Id
+public class UserDto {
     private String id;
-
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String gender;
     private String phoneNumber;
     private String location;
-    private LocalDate dateOfBirth;  // Age
+    private LocalDate dateOfBirth;
 
-    private String[] roles;
     private String designation;
     private String department;
     private LocalDate dateOfJoining;
@@ -33,13 +25,14 @@ public class User {
     private float remainingSickLeaves;
     private float remainingWorkFromHome;
     private float totalPermissionHours;
-    private float usedPermissionHours = 0;
-    private float lossOfPayDays = 0;
+    private float usedPermissionHours;
+    private float lossOfPayDays;
 
-    private String managerId;
-    private int warningsCount = 0;
-    private int leaveApprovalCount = 0;
+    private int warningsCount;
+    private int leaveApprovalCount;
 
     private List<String> teamMembers;
     private Map<String, String> myFiles;
+
+    private ManagerDto manager;
 }
