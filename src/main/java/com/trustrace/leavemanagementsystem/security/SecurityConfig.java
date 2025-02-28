@@ -40,6 +40,9 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/user/forgot-password").permitAll()
+                        .requestMatchers("/user/validate-reset-token").permitAll()
+                        .requestMatchers("/user/reset-password").permitAll()
                         .requestMatchers("/authenticate/").permitAll()
                         .anyRequest().authenticated() // Require authentication for all requests
                 )

@@ -2,24 +2,29 @@ package com.trustrace.leavemanagementsystem.user;
 
 import com.trustrace.leavemanagementsystem.file.FileData;
 import com.trustrace.leavemanagementsystem.file.FileDataDao;
-import com.trustrace.leavemanagementsystem.security.AppUserConfig;
+import com.trustrace.leavemanagementsystem.password.MailDao;
+import com.trustrace.leavemanagementsystem.password.MailService;
+import com.trustrace.leavemanagementsystem.password.PasswordResetToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private MailDao mailDao;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -109,5 +114,35 @@ public class UserService {
             ));
         }
         return filteredUsers;
+    }
+
+    public boolean requestPasswordReset(String email) {
+        User user = getUserByEmail(email);
+        if(user == null) return false;
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken = new PasswordResetToken(token, user.getId(), LocalDateTime.now().plusMinutes(15));
+        mailDao.save(resetToken);
+
+        String resetLink = "http://localhost:4200/reset-password?token=" + token;
+        mailService.sendEmail(user.getEmail(), "Reset Your Password", "Click the link to reset: " + resetLink);
+
+        return true;
+    }
+
+    public boolean validatePasswordResetToken(String token) {
+        Optional<PasswordResetToken> resetToken = mailDao.findByToken(token);
+        return resetToken.isPresent() && !resetToken.get().isExpired();
+    }
+
+    public boolean resetPassword(String token, String newPassword) {
+        Optional<PasswordResetToken> resetToken = mailDao.findByToken(token);
+        if (resetToken.isEmpty() || resetToken.get().isExpired()) return false;
+
+        User user = dao.getUserById(resetToken.get().getUserId());
+        user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        dao.saveUser(user);
+        mailDao.delete(token);
+
+        return true;
     }
 }

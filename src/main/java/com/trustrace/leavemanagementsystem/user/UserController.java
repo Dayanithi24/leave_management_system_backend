@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user/")
@@ -63,6 +65,27 @@ public class UserController {
     @GetMapping("search")
     public ResponseEntity<List<ManagerDto>> searchUser(@RequestParam String name) {
         return ResponseEntity.ok(us.searchUserByName(name));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        if (us.requestPasswordReset(email)) {
+            return ResponseEntity.ok("Reset link sent to email.");
+        }
+        return ResponseEntity.badRequest().body("User not found.");
+    }
+
+    @GetMapping("/validate-reset-token")
+    public ResponseEntity<Map<String, Boolean>> validateToken(@RequestParam String token) {
+        boolean isValid = us.validatePasswordResetToken(token);
+        return ResponseEntity.ok(Collections.singletonMap("valid", isValid));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+        return us.resetPassword(token, newPassword) ?
+                ResponseEntity.ok("Password updated successfully.") :
+                ResponseEntity.badRequest().body("Invalid or expired token.");
     }
 
 }
