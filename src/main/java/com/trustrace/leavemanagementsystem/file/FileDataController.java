@@ -32,6 +32,6 @@ public class FileDataController {
                     .contentType(MediaType.valueOf(fileData.getFiletype()))
                     .body(file);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File notFound");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not Found");
     }
 }

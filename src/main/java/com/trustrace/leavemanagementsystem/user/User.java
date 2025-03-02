@@ -29,16 +29,7 @@ public class User {
     private String department;
     private LocalDate dateOfJoining;
 
-    private float remainingCasualLeaves;
-    private float remainingSickLeaves;
-    private float remainingWorkFromHome;
-    private float totalPermissionHours;
-    private float usedPermissionHours = 0;
-    private float lossOfPayDays = 0;
-
     private String managerId;
-    private int warningsCount = 0;
-    private int leaveApprovalCount = 0;
 
     private List<String> teamMembers;
     private Map<String, String> myFiles;

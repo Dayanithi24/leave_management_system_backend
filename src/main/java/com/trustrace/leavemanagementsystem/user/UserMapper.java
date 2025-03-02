@@ -17,19 +17,11 @@ public class UserMapper {
         dto.setLocation(user.getLocation());
         dto.setDateOfBirth(user.getDateOfBirth());
 
+        dto.setRoles(user.getRoles());
         dto.setDesignation(user.getDesignation());
         dto.setDepartment(user.getDepartment());
         dto.setDateOfJoining(user.getDateOfJoining());
 
-        dto.setRemainingCasualLeaves(user.getRemainingCasualLeaves());
-        dto.setRemainingSickLeaves(user.getRemainingSickLeaves());
-        dto.setRemainingWorkFromHome(user.getRemainingWorkFromHome());
-        dto.setTotalPermissionHours(user.getTotalPermissionHours());
-        dto.setUsedPermissionHours(user.getUsedPermissionHours());
-        dto.setLossOfPayDays(user.getLossOfPayDays());
-
-        dto.setWarningsCount(user.getWarningsCount());
-        dto.setLeaveApprovalCount(user.getLeaveApprovalCount());
         dto.setTeamMembers(user.getTeamMembers());
         dto.setMyFiles(user.getMyFiles());
 

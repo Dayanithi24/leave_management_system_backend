@@ -21,7 +21,7 @@ public class MyUserDetailsService implements UserDetailsService {
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getEmail())
                     .password(user.getPassword())
-                    .roles(user.getRoles()) // Assign roles as needed
+                    .roles(user.getRoles()) 
                     .build();
         } else {
             throw new UsernameNotFoundException("User not found");

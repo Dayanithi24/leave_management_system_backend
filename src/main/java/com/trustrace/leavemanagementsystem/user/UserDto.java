@@ -17,19 +17,10 @@ public class UserDto {
     private String location;
     private LocalDate dateOfBirth;
 
+    private String[] roles;
     private String designation;
     private String department;
     private LocalDate dateOfJoining;
-
-    private float remainingCasualLeaves;
-    private float remainingSickLeaves;
-    private float remainingWorkFromHome;
-    private float totalPermissionHours;
-    private float usedPermissionHours;
-    private float lossOfPayDays;
-
-    private int warningsCount;
-    private int leaveApprovalCount;
 
     private List<String> teamMembers;
     private Map<String, String> myFiles;

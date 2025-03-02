@@ -61,10 +61,19 @@ public class UserService {
     }
 
     public UserDto createUser(User user) {
-        user.setPassword(passwordEncoder.encode((user.getPassword())));
+        if(user.getPassword() != null){
+            user.setPassword(passwordEncoder.encode((user.getPassword())));
+        }
         user.setMyFiles(new HashMap<String, String>());
+        user.setTeamMembers(new ArrayList<String>());
         User newUser = dao.createUser(user);
         User manager = dao.getUserById(user.getManagerId());
+        if(manager != null) {
+            List<String> teamMembers = manager.getTeamMembers();
+            teamMembers.add(newUser.getId());
+            manager.setTeamMembers(teamMembers);
+            dao.saveUser(manager);
+        }
         return userMapper.toUserDto(newUser, manager);
     }
 
