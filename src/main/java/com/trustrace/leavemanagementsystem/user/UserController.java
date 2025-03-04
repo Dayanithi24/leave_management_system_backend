@@ -25,7 +25,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserDto>> getUsersOfPage(@RequestParam int page, @RequestParam int size){
         return ResponseEntity.ok(us.getUsersOfPage(page, size));
     }
@@ -46,6 +45,19 @@ public class UserController {
             return ResponseEntity.ok(us.createUser(user));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
+    @PutMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<UserDto> updateUser(@PathVariable String id, @RequestBody User user){
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        UserDto userDto = us.updateUser(id, user);
+
+        if(userDto == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return ResponseEntity.ok(userDto);
     }
 
     @PutMapping("profile/{id}")

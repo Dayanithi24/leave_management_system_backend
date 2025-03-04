@@ -154,4 +154,41 @@ public class UserService {
 
         return true;
     }
+
+    public UserDto updateUser(String id, User user) {
+        User existingUser = dao.getUserById(id);
+        if(existingUser == null) return null;
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setGender(user.getGender());
+        existingUser.setLocation(user.getLocation());
+        existingUser.setPhoneNumber(user.getPhoneNumber());
+        existingUser.setDepartment(user.getDepartment());
+        existingUser.setDesignation(user.getDesignation());
+        existingUser.setDateOfBirth(user.getDateOfBirth());
+        existingUser.setDateOfJoining(user.getDateOfJoining());
+        existingUser.setRoles(user.getRoles());
+        User newManager = dao.getUserById(user.getManagerId());
+        if(user.getManagerId() != null && newManager != null) {
+            if(!existingUser.getManagerId().equals(user.getManagerId())) {
+
+                List<String> teamMembers = newManager.getTeamMembers();
+                teamMembers.add(existingUser.getId());
+                newManager.setTeamMembers(teamMembers);
+                dao.saveUser(newManager);
+
+                User existingManager = dao.getUserById(existingUser.getManagerId());
+                if(existingManager != null) {
+                    teamMembers = existingManager.getTeamMembers();
+                    teamMembers.remove(existingUser.getId());
+                    existingManager.setTeamMembers(teamMembers);
+                    dao.saveUser(existingManager);
+                }
+                existingUser.setManagerId(user.getManagerId());
+            }
+        }
+        dao.saveUser(existingUser);
+        return userMapper.toUserDto(existingUser, newManager);
+    }
 }

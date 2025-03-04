@@ -3,6 +3,7 @@ package com.trustrace.leavemanagementsystem.leavepolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -11,6 +12,7 @@ public class LeavePolicyService {
     private LeavePolicyDao dao;
 
     public LeavePolicy createLeavePolicy(LeavePolicy leavePolicy) {
+        leavePolicy.setCreatedAt(LocalDateTime.now());
         return dao.createLeavePolicy(leavePolicy);
     }
 
