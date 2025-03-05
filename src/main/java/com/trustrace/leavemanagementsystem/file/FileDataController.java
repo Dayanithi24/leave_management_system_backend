@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @RestController
-@RequestMapping("/file/")
+@RequestMapping("v1/api/file/")
 public class FileDataController {
     @Autowired
     private FileDataService fs;

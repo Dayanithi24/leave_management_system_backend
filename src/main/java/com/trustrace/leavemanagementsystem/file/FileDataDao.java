@@ -49,4 +49,13 @@ public class FileDataDao {
         mt.remove(fileData);
         return newFile;
     }
+
+    public boolean deleteFile(String id) {
+        FileData fileData = mt.findById(id, FileData.class);
+        if(fileData == null) return false;
+        File file = new File(fileData.getFilePath());
+        if(file.exists()) file.delete();
+        mt.remove(fileData);
+        return true;
+    }
 }

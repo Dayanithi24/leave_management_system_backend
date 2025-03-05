@@ -27,7 +27,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("authenticate/")
+    @PostMapping("v1/api/authenticate/")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) {
         try {
             authenticationManager.authenticate(

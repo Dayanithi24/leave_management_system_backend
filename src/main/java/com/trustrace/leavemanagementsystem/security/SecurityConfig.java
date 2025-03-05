@@ -34,20 +34,20 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:4200")); // ✅ Allow frontend origin
+                    config.setAllowedOrigins(List.of("http://localhost:4200"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     return config;
                 }))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/user/forgot-password").permitAll()
-                        .requestMatchers("/user/validate-reset-token").permitAll()
-                        .requestMatchers("/user/reset-password").permitAll()
-                        .requestMatchers("/authenticate/").permitAll()
-                        .anyRequest().authenticated() // Require authentication for all requests
+                        .requestMatchers("v1/api/user/forgot-password").permitAll()
+                        .requestMatchers("v1/api/user/validate-reset-token").permitAll()
+                        .requestMatchers("v1/api/user/reset-password").permitAll()
+                        .requestMatchers("v1/api/authenticate/").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(withDefaults()) // Use HTTP Basic Authentication
+                .httpBasic(withDefaults())
                 .csrf(csrf -> csrf.disable());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/leave-request/")
+@RequestMapping("v1/api/leave-request/")
 public class LeaveRequestController {
     @Autowired
     private LeaveRequestService lrs;

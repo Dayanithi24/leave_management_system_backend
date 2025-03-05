@@ -64,7 +64,7 @@ public class UserService {
         if(user.getPassword() != null){
             user.setPassword(passwordEncoder.encode((user.getPassword())));
         }
-        user.setMyFiles(new HashMap<String, String>());
+        user.setMyFiles(new HashMap<String, Object>());
         user.setTeamMembers(new ArrayList<String>());
         User newUser = dao.createUser(user);
         User manager = dao.getUserById(user.getManagerId());
@@ -89,8 +89,9 @@ public class UserService {
 
     public String changeProfile(String id, MultipartFile img) throws Exception {
         User user = dao.getUserById(id);
-        Map<String, String> files = user.getMyFiles();
-        String fileId = files.get("profile");
+        if(user == null) return null;
+        Map<String, Object> files = user.getMyFiles();
+        String fileId = (String) files.get("profile");
         FileData fileData = null;
 
         if(fileId == null){
@@ -107,6 +108,43 @@ public class UserService {
         else {
             throw new RuntimeException("File not saved");
         }
+    }
+
+    public String uploadFile(String id, MultipartFile file) throws Exception {
+        User user = dao.getUserById(id);
+        if(user == null) return null;
+        Map<String, Object> files = user.getMyFiles();
+        List<String> others = (List<String>) files.get("others");
+
+        if(others == null) {
+           others = new ArrayList<>();
+           files.put("others", others);
+        }
+
+        FileData fileData =fileDataDao.uploadFile(file);
+        if (fileData != null){
+           others.add(fileData.getId());
+           dao.saveUser(user);
+           return fileData.getId();
+        }
+        else {
+            throw new RuntimeException("File not saved");
+        }
+    }
+
+    public String deleteFile(String userId, String fileId) {
+        User user = dao.getUserById(userId);
+        if(user == null) return null;
+        List<String> others = (List<String>) user.getMyFiles().get("others");
+        if(others.contains(fileId)) {
+            if(fileDataDao.deleteFile(fileId)){
+                others.remove(fileId);
+                dao.saveUser(user);
+                return "success";
+            }
+            else return "File not found";
+        }
+        return "File not found";
     }
 
     public List<ManagerDto> searchUserByName(String name) {

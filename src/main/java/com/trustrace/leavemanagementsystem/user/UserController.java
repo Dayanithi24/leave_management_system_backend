@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("v1/api/user/")
 public class UserController {
     @Autowired
     private UserService us;
@@ -63,6 +63,22 @@ public class UserController {
     @PutMapping("profile/{id}")
     public ResponseEntity<String> changeProfile(@PathVariable("id") String id, @RequestParam MultipartFile img) throws Exception {
         String response = us.changeProfile(id,img);
+        if(response == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("file/{id}")
+    public ResponseEntity<String> uploadFile(@PathVariable("id") String id, @RequestParam MultipartFile file) throws Exception {
+        String response = us.uploadFile(id,file);
+        if(response == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("file/{id}")
+    public ResponseEntity<String> deleteFile(@PathVariable("id") String id, @RequestParam String fileId) throws Exception {
+        String response = us.deleteFile(id,fileId);
+        if(response == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
+        if(response.equals("File not found")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         return ResponseEntity.ok(response);
     }
 

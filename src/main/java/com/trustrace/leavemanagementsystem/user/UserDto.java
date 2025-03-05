@@ -23,7 +23,7 @@ public class UserDto {
     private LocalDate dateOfJoining;
 
     private List<String> teamMembers;
-    private Map<String, String> myFiles;
+    private Map<String, Object> myFiles;
 
     private ManagerDto manager;
 }

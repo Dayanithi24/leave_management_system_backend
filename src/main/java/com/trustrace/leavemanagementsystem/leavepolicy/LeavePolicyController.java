@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/leave-policy/")
+@RestController("v1/api/leave-policy/")
 public class LeavePolicyController {
     @Autowired
     private LeavePolicyService lps;
