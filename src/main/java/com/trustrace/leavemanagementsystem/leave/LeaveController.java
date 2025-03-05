@@ -3,6 +3,7 @@ package com.trustrace.leavemanagementsystem.leave;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class LeaveController {
     private LeaveService ls;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR')")
     public ResponseEntity<LeaveDto> createLeave(@RequestBody Leave leave, @RequestParam String timezone){
         if(leave == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         return ResponseEntity.ok(ls.saveLeave(leave, timezone));
@@ -30,6 +32,7 @@ public class LeaveController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR')")
     public ResponseEntity<String> deleteLeave(@PathVariable String id) {
         if(id == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is null");
         boolean response = ls.deleteLeave(id);

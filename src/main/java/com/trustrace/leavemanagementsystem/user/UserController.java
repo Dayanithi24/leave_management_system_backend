@@ -19,7 +19,7 @@ public class UserController {
     private UserService us;
 
     @GetMapping("all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR')")
     public ResponseEntity<List<UserDto>> getAllUsers(){
         return ResponseEntity.ok(us.getAllUsers());
     }
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR')")
     public ResponseEntity<UserDto> createUser(@RequestBody User user){
         if(user!=null) {
             return ResponseEntity.ok(us.createUser(user));
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR')")
     public ResponseEntity<UserDto> updateUser(@PathVariable String id, @RequestBody User user){
         if(user == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

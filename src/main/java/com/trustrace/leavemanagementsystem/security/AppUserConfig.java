@@ -10,6 +10,6 @@ public class AppUserConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Use BCrypt to hash passwords
+        return new BCryptPasswordEncoder();
     }
 }

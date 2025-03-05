@@ -31,7 +31,6 @@ public class FileDataDao {
 
     public FileData downloadFile(String id) throws IOException {
         FileData fileData = mt.findById(id, FileData.class);
-//        if (fileData == null) throw new RuntimeException("File Not found in FileDataDao");
         return fileData;
     }
 

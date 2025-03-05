@@ -3,6 +3,7 @@ package com.trustrace.leavemanagementsystem.leaverequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,7 @@ public class LeaveRequestController {
     }
 
     @PutMapping("approve/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER')")
     public ResponseEntity<LeaveRequest> approveLeaveRequest(@PathVariable String id){
         if(id == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         LeaveRequest leaveRequest = lrs.approveLeaveRequest(id);
@@ -43,6 +45,7 @@ public class LeaveRequestController {
     }
 
     @PutMapping("reject/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER')")
     public ResponseEntity<LeaveRequest> rejectLeaveRequest(@PathVariable String id, @RequestBody String reason){
         if(id == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         LeaveRequest leaveRequest = lrs.rejectLeaveRequest(id, reason);
@@ -84,6 +87,7 @@ public class LeaveRequestController {
     }
 
     @PutMapping("approve-cancel/{leaveId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER')")
     public ResponseEntity<String> approveLeaveCancellation(@PathVariable String leaveId,
                                                            @RequestParam String managerId) {
         String response = lrs.approveCancelLeave(leaveId, managerId);
@@ -101,6 +105,7 @@ public class LeaveRequestController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteLeaveRequest(@PathVariable String id){
         if(id == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is null");

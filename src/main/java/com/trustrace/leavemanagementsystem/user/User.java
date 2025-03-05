@@ -22,7 +22,7 @@ public class User {
     private String gender;
     private String phoneNumber;
     private String location;
-    private LocalDate dateOfBirth;  // Age
+    private LocalDate dateOfBirth;
 
     private String[] roles;
     private String designation;
