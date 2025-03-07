@@ -40,10 +40,10 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("v1/api/user/forgot-password").permitAll()
-                        .requestMatchers("v1/api/user/validate-reset-token").permitAll()
-                        .requestMatchers("v1/api/user/reset-password").permitAll()
-                        .requestMatchers("v1/api/authenticate/").permitAll()
+                        .requestMatchers("/v1/api/user/forgot-password").permitAll()
+                        .requestMatchers("/v1/api/user/validate-reset-token").permitAll()
+                        .requestMatchers("/v1/api/user/reset-password").permitAll()
+                        .requestMatchers("/v1/api/authenticate/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

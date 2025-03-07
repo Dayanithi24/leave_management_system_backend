@@ -2,31 +2,26 @@ package com.trustrace.leavemanagementsystem.leavepolicy;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "leave_policies")
 @Data
+@Builder
 public class LeavePolicy {
 
     @Id
     private String id;
-
-    private int casualLeavePerMonth;
-    private int casualLeavePerYear;
-    private int minimumDaysToGetCasualLeave;
-    private int lossOfPayPerMonth;
-    private int lossOfPayPerYear;
-    private int sickLeavePerMonth;
-    private int sickLeavePerYear;
-    private int workFromHomePerMonth;
-    private int workFromHomePerWeek;
-    private int warningsBeforeEscalation;
-
+    private List<LeaveType> leaves;
     private String createdBy;
-    private LocalDateTime createdAt;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private Instant startDate;
+    private Instant endDate;
+    private String previousPolicyId;
+    private boolean active;
 }
