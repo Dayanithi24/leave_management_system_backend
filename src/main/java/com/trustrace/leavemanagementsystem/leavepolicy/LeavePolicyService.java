@@ -68,4 +68,11 @@ public class LeavePolicyService {
     public boolean deleteLeavePolicy(String id) {
         return dao.deleteLeavePolicy(id);
     }
+
+    public LeavePolicyDto getCurrentLeavePolicy(String timezone) {
+        List<LeavePolicy> leavePolicies = dao.getCurrentLeavePolicy();
+        if(leavePolicies.size() == 1) return convertToTimezone(leavePolicies.getFirst(), timezone);
+        if (leavePolicies.size() > 1) throw new RuntimeException("More than 1 current leave policy found");
+        return null;
+    }
 }

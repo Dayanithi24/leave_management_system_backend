@@ -27,6 +27,14 @@ public class LeavePolicyController {
         return ResponseEntity.ok(lps.getAllLeavePolicies(timezone));
     }
 
+    @GetMapping("active")
+    public ResponseEntity<LeavePolicyDto> getCurrentLeavePolicy(@RequestParam String timezone) {
+        LeavePolicyDto leavePolicyDto = lps.getCurrentLeavePolicy(timezone);
+        if (leavePolicyDto != null)
+            return ResponseEntity.ok(leavePolicyDto);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<LeavePolicyDto> getLeavePolicyById(@PathVariable String id, @RequestParam String timezone) {
         if(id == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
