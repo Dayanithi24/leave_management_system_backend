@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +20,21 @@ public class LeaveRequestService {
 
     public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest, List<MultipartFile> files) throws Exception {
         leaveRequest.setStatus("PENDING");
-        leaveRequest.setRequestedAt(LocalDateTime.now());
+        leaveRequest.setRequestedAt(Instant.now());
         leaveRequest.setCancellationRequested(false);
         List<String> documents = new ArrayList<>();
-        for (MultipartFile file : files) {
-            FileData fileData = fileDao.uploadFile(file);
-            documents.add(fileData.getId());
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                FileData fileData = fileDao.uploadFile(file);
+                documents.add(fileData.getId());
+            }
+            leaveRequest.setDocuments(documents);
         }
-        leaveRequest.setDocuments(documents);
         return dao.createLeaveRequest(leaveRequest);
     }
 
-    public List<LeaveRequest> getAllLeaveRequests() {
-        return dao.getAllLeavePolicies();
+    public List<LeaveRequest> getAllLeaveRequests(String id) {
+        return dao.getAllLeavePolicies(id);
     }
 
     public LeaveRequest getLeaveRequestById(String id) {
@@ -45,8 +48,8 @@ public class LeaveRequestService {
     public LeaveRequest approveLeaveRequest(String id) {
         LeaveRequest leaveRequest = dao.getLeaveRequestById(id);
         if (leaveRequest == null) return null;
-        leaveRequest.setStatus("APPPROVED");
-        leaveRequest.setUpdatedAt(LocalDateTime.now());
+        leaveRequest.setStatus("APPROVED");
+        leaveRequest.setUpdatedAt(Instant.now());
         return dao.saveLeaveRequest(leaveRequest);
     }
 
@@ -55,7 +58,7 @@ public class LeaveRequestService {
         if (leaveRequest == null) return null;
         leaveRequest.setStatus("REJECTED");
         leaveRequest.setRejectionReason(reason);
-        leaveRequest.setUpdatedAt(LocalDateTime.now());
+        leaveRequest.setUpdatedAt(Instant.now());
         return dao.saveLeaveRequest(leaveRequest);
     }
 
@@ -67,7 +70,7 @@ public class LeaveRequestService {
         }
         if("PENDING".equals(leaveRequest.getStatus())){
             leaveRequest.setStatus("CANCELLED");
-            leaveRequest.setUpdatedAt(LocalDateTime.now());
+            leaveRequest.setUpdatedAt(Instant.now());
             leaveRequest.setCancelledBy(userId);
             dao.saveLeaveRequest(leaveRequest);
             return "success";
@@ -82,7 +85,7 @@ public class LeaveRequestService {
         if(!"APPROVED".equals(leaveRequest.getStatus())) return "bad";
         leaveRequest.setCancellationRequested(true);
         leaveRequest.setCancellationReason(reason);
-        leaveRequest.setUpdatedAt(LocalDateTime.now());
+        leaveRequest.setUpdatedAt(Instant.now());
         dao.saveLeaveRequest(leaveRequest);
         return "Cancellation request sent to manager";
     }
@@ -95,9 +98,17 @@ public class LeaveRequestService {
         leaveRequest.setStatus("CANCELLED");
         leaveRequest.setCancellationRequested(false);
         leaveRequest.setCancelledBy(managerId);
-        leaveRequest.setUpdatedAt(LocalDateTime.now());
+        leaveRequest.setUpdatedAt(Instant.now());
         dao.saveLeaveRequest(leaveRequest);
         return "Leave request successfully cancelled by manager";
 
+    }
+
+    public Float getLeavesCount(String id, Date start, Date end) {
+        return dao.getLeavesCount(id, start, end);
+    }
+
+    public List<LeaveRequest> getAllLeaveRequestsOfMyTeam(String userId) {
+        return dao.getAllLeaveRequestsOfMyTeam(userId);
     }
 }

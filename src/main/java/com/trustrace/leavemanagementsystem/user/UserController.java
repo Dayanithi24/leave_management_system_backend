@@ -29,6 +29,11 @@ public class UserController {
         return ResponseEntity.ok(us.getUsersOfPage(page, size));
     }
 
+    @GetMapping("my-team/{id}")
+    public ResponseEntity<Page<UserDto>> getMyTeam(@PathVariable String id, @RequestParam int page, @RequestParam int size){
+        return ResponseEntity.ok(us.getMyTeam(id, page, size));
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<UserDto> getUserDto(@PathVariable("id") String id){
         UserDto user=us.getUserById(id);

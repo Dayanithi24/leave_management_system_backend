@@ -229,4 +229,10 @@ public class UserService {
         dao.saveUser(existingUser);
         return userMapper.toUserDto(existingUser, newManager);
     }
+
+    public Page<UserDto> getMyTeam(String id, int page, int size) {
+        Page<User> users = dao.getMyTeam(id, page, size);
+        List<UserDto> userList = convertListOfUsers(users.getContent());
+        return new PageImpl<>(userList, users.getPageable(), users.getTotalElements());
+    }
 }

@@ -1,5 +1,6 @@
 package com.trustrace.leavemanagementsystem.leaverequest;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -16,15 +18,21 @@ public class LeaveRequestController {
     private LeaveRequestService lrs;
 
     @PostMapping
-    public ResponseEntity<LeaveRequest> createLeaveRequest(@RequestBody LeaveRequest leaveRequest, @RequestParam List<MultipartFile> files) throws Exception {
+    public ResponseEntity<LeaveRequest> createLeaveRequest( @RequestPart("leaveRequest") LeaveRequest leaveRequest,
+                                                            @RequestPart(value = "files", required = false) List<MultipartFile> files) throws Exception {
         if (leaveRequest == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         LeaveRequest leaveRequest1 = lrs.createLeaveRequest(leaveRequest, files);
         return ResponseEntity.ok(leaveRequest);
     }
 
     @GetMapping
-    public ResponseEntity<List<LeaveRequest>> getAllLeaveRequests() {
-        return ResponseEntity.ok(lrs.getAllLeaveRequests());
+    public ResponseEntity<List<LeaveRequest>> getAllLeaveRequestsOfUser(@RequestParam String userId) {
+        return ResponseEntity.ok(lrs.getAllLeaveRequests(userId));
+    }
+
+    @GetMapping("my-team")
+    public ResponseEntity<List<LeaveRequest>> getAllLeaveRequestsOfMyTeam(@RequestParam String userId) {
+        return ResponseEntity.ok(lrs.getAllLeaveRequestsOfMyTeam(userId));
     }
 
     @GetMapping("{id}")
@@ -113,5 +121,12 @@ public class LeaveRequestController {
             return ResponseEntity.ok("Deleted Successfully!!");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Leave Policy not found");
+    }
+
+    @GetMapping("count/{id}")
+    public ResponseEntity<Float> getLeavesCount(@PathVariable String id,@RequestParam Date startDate, @RequestParam Date endDate) {
+        if(startDate == null || endDate == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.ok(lrs.getLeavesCount(id, startDate, endDate));
     }
 }

@@ -69,4 +69,16 @@ public class UserDao {
         AggregationResults<User> results = mt.aggregate(aggregation, "users", User.class);
         return results.getMappedResults();
     }
+
+    public Page<User> getMyTeam(String id, int page, int size) {
+        Query query = new Query(Criteria.where("managerId").is(id));
+        long totalCount = mt.count(query, User.class);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("firstName"), Sort.Order.asc("lastName")));
+        query.with(pageable);
+
+        List<User> responses = mt.find(query, User.class);
+
+        return new PageImpl<>(responses, pageable, totalCount);
+    }
 }

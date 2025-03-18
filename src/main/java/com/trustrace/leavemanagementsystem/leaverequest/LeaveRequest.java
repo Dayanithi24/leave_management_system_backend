@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "leave_requests")
 @Data
@@ -19,9 +20,7 @@ public class LeaveRequest {
     private String leaveType;
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean isStartHalfDay;
-    private boolean isEndHalfDay;
-    private String halfDayType;
+    private Map<String, Boolean> leaveDays;
     private float duration;
     private String requesterId;
     private String approverId;
@@ -32,6 +31,6 @@ public class LeaveRequest {
     private String requestReason;
     private String rejectionReason;
     private List<String> documents;
-    private LocalDateTime requestedAt;
-    private LocalDateTime updatedAt;
+    private Instant requestedAt;
+    private Instant updatedAt;
 }
