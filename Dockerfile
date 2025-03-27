@@ -2,8 +2,8 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY target/leavemanagementsystem-0.0.1-SNAPSHOT.jar /app/app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
